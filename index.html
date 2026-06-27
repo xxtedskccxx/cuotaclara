@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CuotaClara - Calculadora de Préstamos Inteligente</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome para los Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         body { 
@@ -18,7 +16,6 @@
             color: #2d3748; 
         }
         
-        /* Fondo de la cabecera */
         .hero-bg { 
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); 
             padding: 60px 0 120px 0; 
@@ -26,7 +23,6 @@
             text-align: center;
         }
 
-        /* Tarjeta principal que flota sobre el fondo */
         .glass-card { 
             background: white; 
             border-radius: 24px; 
@@ -38,79 +34,53 @@
             padding: 40px;
         }
 
-        /* Estilos de los inputs */
         .form-label { font-weight: 600; color: #4a5568; }
-        .input-group-text { 
-            background-color: #f8fafc; 
-            border: 2px solid #e2e8f0; 
-            border-right: none; 
-            color: #4fd1c5; 
-        }
-        .form-control { 
-            border: 2px solid #e2e8f0; 
-            border-left: none; 
-            box-shadow: none !important; 
-            padding: 12px;
-            font-weight: 600;
-            color: #2d3748;
-        }
+        .input-group-text { background-color: #f8fafc; border: 2px solid #e2e8f0; border-right: none; color: #4fd1c5; }
+        .form-control { border: 2px solid #e2e8f0; border-left: none; box-shadow: none !important; padding: 12px; font-weight: 600; color: #2d3748; }
         .form-control:focus { border-color: #e2e8f0; background-color: #f8fafc; }
 
-        /* Botón con degradado */
         .btn-calc { 
             background: linear-gradient(135deg, #38b2ac 0%, #319795 100%); 
-            border: none; 
-            color: white; 
-            padding: 16px; 
-            border-radius: 12px; 
-            font-weight: 700; 
-            font-size: 1.2rem; 
-            transition: all 0.3s ease; 
+            border: none; color: white; padding: 16px; border-radius: 12px; 
+            font-weight: 700; font-size: 1.2rem; transition: all 0.3s ease; 
             box-shadow: 0 10px 20px rgba(49, 151, 149, 0.3); 
         }
-        .btn-calc:hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 15px 25px rgba(49, 151, 149, 0.4); 
-            color: white;
-        }
+        .btn-calc:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(49, 151, 149, 0.4); color: white; }
 
-        /* Caja de Resultado */
         .result-box { 
             background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%); 
-            border: 2px solid #c6f6d5; 
-            border-radius: 16px; 
-            padding: 25px;
+            border: 2px solid #c6f6d5; border-radius: 16px; padding: 25px;
+            animation: fadeIn 0.8s ease-in-out;
         }
         .text-gradient { 
             background: linear-gradient(135deg, #2c7a7b, #319795); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
             font-size: 2.5rem;
         }
 
-        /* Tabla estilizada */
-        .table thead th { 
-            background-color: #edf2f7; 
-            color: #4a5568; 
-            border-bottom: none; 
-            padding: 15px;
-        }
+        .table thead th { background-color: #edf2f7; color: #4a5568; border-bottom: none; padding: 15px; }
         .table td { vertical-align: middle; padding: 15px; border-bottom: 1px solid #edf2f7; }
         
         .seo-section { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); padding: 40px; margin-top: 40px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Animación para que la tabla y el gráfico aparezcan suavemente */
+        .fade-in-section { animation: fadeIn 0.8s ease-in-out; }
     </style>
 </head>
 <body>
 
-    <!-- Cabecera -->
     <div class="hero-bg">
         <div class="container">
             <h1 class="fw-bold"><i class="fa-solid fa-wallet me-2"></i> CuotaClara</h1>
-            <p class="lead" style="opacity: 0.9;">Planifica tus finanzas sin sorpresas ocultas.</p>
+            <p class="lead" style="opacity: 0.9;">Planifica tus finanzas de forma visual y sin sorpresas.</p>
         </div>
     </div>
 
-    <!-- Sección de la Calculadora -->
     <div class="container mb-5">
         <div class="row justify-content-center">
             <div class="col-lg-9">
@@ -148,39 +118,55 @@
                         <i class="fa-solid fa-calculator me-2"></i> Calcular Cuota Mensual
                     </button>
 
-                    <!-- Resultado Principal -->
-                    <div id="resultado" class="mt-4 text-center result-box" style="display: none;">
-                        <span class="text-muted d-block mb-2 fw-bold text-uppercase" style="letter-spacing: 1px;">Tu pago mensual estimado</span>
-                        <h2 id="cuota-mensual" class="fw-bold m-0 text-gradient">$0.00</h2>
-                    </div>
-
-                    <!-- Tabla de Amortización -->
-                    <div id="tabla-container" class="mt-5" style="display: none;">
-                        <h4 class="mb-4 text-center fw-bold" style="color: #2d3748;"><i class="fa-solid fa-chart-line me-2 text-success"></i> Desglose de Pagos</h4>
-                        <div class="table-responsive" style="max-height: 450px; overflow-y: auto; border-radius: 12px; border: 1px solid #edf2f7;">
-                            <table class="table table-hover text-center m-0">
-                                <thead style="position: sticky; top: 0; z-index: 1;">
-                                    <tr>
-                                        <th>Mes</th>
-                                        <th>Cuota</th>
-                                        <th>Interés</th>
-                                        <th>Capital</th>
-                                        <th>Saldo Restante</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-body">
-                                </tbody>
-                            </table>
+                    <div id="zona-resultados" style="display: none;" class="fade-in-section">
+                        
+                        <div class="row mt-5">
+                            <div class="col-md-6 mb-4">
+                                <div class="result-box h-100 d-flex flex-column justify-content-center">
+                                    <span class="text-muted d-block mb-2 fw-bold text-uppercase" style="letter-spacing: 1px;">Tu pago mensual estimado</span>
+                                    <h2 id="cuota-mensual" class="fw-bold m-0 text-gradient">$0.00</h2>
+                                    <hr class="my-3" style="border-color: #c6f6d5;">
+                                    <div class="d-flex justify-content-between text-muted small fw-bold">
+                                        <span>Total a pagar al final:</span>
+                                        <span id="pago-total" style="color: #2d3748;">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="p-3" style="border: 2px solid #edf2f7; border-radius: 16px; background: #f8fafc; height: 100%;">
+                                    <canvas id="graficoResultados" style="max-height: 200px;"></canvas>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                </div>
+                        <div id="tabla-container" class="mt-4">
+                            <h4 class="mb-4 text-center fw-bold" style="color: #2d3748;"><i class="fa-solid fa-chart-line me-2 text-success"></i> Desglose de Pagos</h4>
+                            <div class="table-responsive" style="max-height: 450px; overflow-y: auto; border-radius: 12px; border: 1px solid #edf2f7;">
+                                <table class="table table-hover text-center m-0">
+                                    <thead style="position: sticky; top: 0; z-index: 1;">
+                                        <tr>
+                                            <th>Mes</th>
+                                            <th>Cuota</th>
+                                            <th>Interés</th>
+                                            <th>Capital</th>
+                                            <th>Saldo Restante</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabla-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div> </div>
             </div>
         </div>
     </div>
 
-    <!-- Lógica de la calculadora -->
     <script>
+        let miGrafico = null; // Variable para almacenar el gráfico y poder actualizarlo
+
         function calcularCuota() {
             let V = parseFloat(document.getElementById('monto').value);
             let interesAnual = parseFloat(document.getElementById('interes').value);
@@ -193,13 +179,44 @@
 
             let i = (interesAnual / 100) / 12;
             let C = V * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+            let pagoTotal = C * n;
+            let totalIntereses = pagoTotal - V;
 
+            // Actualizar números en pantalla
             document.getElementById('cuota-mensual').innerText = "$" + C.toLocaleString('es-DO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            document.getElementById('resultado').style.display = 'block';
+            document.getElementById('pago-total').innerText = "$" + pagoTotal.toLocaleString('es-DO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            
+            // Mostrar la zona de resultados
+            document.getElementById('zona-resultados').style.display = 'block';
 
+            // --- Lógica del Gráfico Chart.js ---
+            if(miGrafico != null){
+                miGrafico.destroy(); // Destruir gráfico anterior si existe
+            }
+            let ctx = document.getElementById('graficoResultados').getContext('2d');
+            miGrafico = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Capital Principal', 'Total Intereses'],
+                    datasets: [{
+                        data: [V, totalIntereses],
+                        backgroundColor: ['#38b2ac', '#e53e3e'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // --- Lógica de la Tabla ---
             let tbody = document.getElementById('tabla-body');
             tbody.innerHTML = ''; 
-            
             let saldo = V;
 
             for (let mes = 1; mes <= n; mes++) {
@@ -219,12 +236,9 @@
                 
                 tbody.innerHTML += fila;
             }
-
-            document.getElementById('tabla-container').style.display = 'block';
         }
     </script>
 
-    <!-- Sección de Contenido SEO -->
     <div class="container mb-5">
         <div class="row justify-content-center">
             <div class="col-lg-9">
@@ -250,7 +264,6 @@
         </div>
     </div>
 
-    <!-- Footer Legal para AdSense -->
     <footer class="text-center pb-5 pt-3">
         <p class="text-muted small fw-bold">
             &copy; 2026 CuotaClara. Todos los derechos reservados.<br><br>

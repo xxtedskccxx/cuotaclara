@@ -3,49 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CuotaClara - Calculadora de Préstamos</title>
+    <title>CuotaClara - Calculadora de Préstamos Inteligente</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome para los Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #f4f7f6; 
+            color: #2d3748; 
+        }
+        
+        /* Fondo de la cabecera */
+        .hero-bg { 
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); 
+            padding: 60px 0 120px 0; 
+            color: white; 
+            text-align: center;
+        }
+
+        /* Tarjeta principal que flota sobre el fondo */
+        .glass-card { 
+            background: white; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+            margin-top: -80px; 
+            border: none; 
+            z-index: 10; 
+            position: relative; 
+            padding: 40px;
+        }
+
+        /* Estilos de los inputs */
+        .form-label { font-weight: 600; color: #4a5568; }
+        .input-group-text { 
+            background-color: #f8fafc; 
+            border: 2px solid #e2e8f0; 
+            border-right: none; 
+            color: #4fd1c5; 
+        }
+        .form-control { 
+            border: 2px solid #e2e8f0; 
+            border-left: none; 
+            box-shadow: none !important; 
+            padding: 12px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .form-control:focus { border-color: #e2e8f0; background-color: #f8fafc; }
+
+        /* Botón con degradado */
+        .btn-calc { 
+            background: linear-gradient(135deg, #38b2ac 0%, #319795 100%); 
+            border: none; 
+            color: white; 
+            padding: 16px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 1.2rem; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 10px 20px rgba(49, 151, 149, 0.3); 
+        }
+        .btn-calc:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 15px 25px rgba(49, 151, 149, 0.4); 
+            color: white;
+        }
+
+        /* Caja de Resultado */
+        .result-box { 
+            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%); 
+            border: 2px solid #c6f6d5; 
+            border-radius: 16px; 
+            padding: 25px;
+        }
+        .text-gradient { 
+            background: linear-gradient(135deg, #2c7a7b, #319795); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            font-size: 2.5rem;
+        }
+
+        /* Tabla estilizada */
+        .table thead th { 
+            background-color: #edf2f7; 
+            color: #4a5568; 
+            border-bottom: none; 
+            padding: 15px;
+        }
+        .table td { vertical-align: middle; padding: 15px; border-bottom: 1px solid #edf2f7; }
+        
+        .seo-section { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); padding: 40px; margin-top: 40px; }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-    <div class="container mt-5 mb-5">
+    <!-- Cabecera -->
+    <div class="hero-bg">
+        <div class="container">
+            <h1 class="fw-bold"><i class="fa-solid fa-wallet me-2"></i> CuotaClara</h1>
+            <p class="lead" style="opacity: 0.9;">Planifica tus finanzas sin sorpresas ocultas.</p>
+        </div>
+    </div>
+
+    <!-- Sección de la Calculadora -->
+    <div class="container mb-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow-sm p-4" style="border-radius: 12px; background-color: #ffffff;">
-                    <h2 class="text-center mb-3" style="color: #0056b3; font-weight: bold;">CuotaClara 💸</h2>
-                    <p class="text-muted text-center mb-4">Calcula tu cuota mensual al instante de forma transparente.</p>
-
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="monto" class="form-label fw-bold">Monto ($):</label>
-                            <input type="number" id="monto" class="form-control" value="500000">
+            <div class="col-lg-9">
+                <div class="glass-card">
+                    <h3 class="text-center mb-4 fw-bold" style="color: #2d3748;">Simulador de Préstamos</h3>
+                    
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <label for="monto" class="form-label">Monto a solicitar:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-dollar-sign"></i></span>
+                                <input type="number" id="monto" class="form-control" value="500000">
+                            </div>
                         </div>
 
-                        <div class="col-md-4 mb-3">
-                            <label for="interes" class="form-label fw-bold">Interés Anual (%):</label>
-                            <input type="number" id="interes" class="form-control" value="14" step="0.1">
+                        <div class="col-md-4">
+                            <label for="interes" class="form-label">Tasa Anual:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-percent"></i></span>
+                                <input type="number" id="interes" class="form-control" value="14" step="0.1">
+                            </div>
                         </div>
 
-                        <div class="col-md-4 mb-4">
-                            <label for="meses" class="form-label fw-bold">Plazo (meses):</label>
-                            <input type="number" id="meses" class="form-control" value="60">
+                        <div class="col-md-4">
+                            <label for="meses" class="form-label">Plazo:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-regular fa-calendar-days"></i></span>
+                                <input type="number" id="meses" class="form-control" value="60">
+                                <span class="input-group-text" style="border-left: none; border-right: 2px solid #e2e8f0;">meses</span>
+                            </div>
                         </div>
                     </div>
 
-                    <button onclick="calcularCuota()" class="btn btn-primary btn-lg w-100 fw-bold" style="background-color: #0056b3; border: none;">
-                        Calcular Cuota
+                    <button onclick="calcularCuota()" class="btn-calc w-100">
+                        <i class="fa-solid fa-calculator me-2"></i> Calcular Cuota Mensual
                     </button>
 
-                    <div id="resultado" class="mt-4 p-3 text-center" style="display: none; background-color: #e6f2ff; border-radius: 8px; border-left: 5px solid #0056b3;">
-                        <span class="text-muted d-block mb-1">Tu pago mensual estimado:</span>
-                        <h2 id="cuota-mensual" class="fw-bold m-0" style="color: #0056b3;">$0.00</h2>
+                    <!-- Resultado Principal -->
+                    <div id="resultado" class="mt-4 text-center result-box" style="display: none;">
+                        <span class="text-muted d-block mb-2 fw-bold text-uppercase" style="letter-spacing: 1px;">Tu pago mensual estimado</span>
+                        <h2 id="cuota-mensual" class="fw-bold m-0 text-gradient">$0.00</h2>
                     </div>
 
-                    <div id="tabla-container" class="mt-4" style="display: none;">
-                        <h4 class="mb-3 text-center" style="color: #333;">Desglose de Pagos</h4>
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                            <table class="table table-striped table-hover text-center">
-                                <thead style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 1;">
+                    <!-- Tabla de Amortización -->
+                    <div id="tabla-container" class="mt-5" style="display: none;">
+                        <h4 class="mb-4 text-center fw-bold" style="color: #2d3748;"><i class="fa-solid fa-chart-line me-2 text-success"></i> Desglose de Pagos</h4>
+                        <div class="table-responsive" style="max-height: 450px; overflow-y: auto; border-radius: 12px; border: 1px solid #edf2f7;">
+                            <table class="table table-hover text-center m-0">
+                                <thead style="position: sticky; top: 0; z-index: 1;">
                                     <tr>
                                         <th>Mes</th>
                                         <th>Cuota</th>
@@ -65,6 +179,7 @@
         </div>
     </div>
 
+    <!-- Lógica de la calculadora -->
     <script>
         function calcularCuota() {
             let V = parseFloat(document.getElementById('monto').value);
@@ -95,11 +210,11 @@
                 if (saldo < 0.01) saldo = 0;
 
                 let fila = `<tr>
-                    <td class="fw-bold">${mes}</td>
-                    <td>$${C.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td class="text-danger">-$${interesMes.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td class="text-success">+$${capitalMes.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td class="fw-bold">$${saldo.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="fw-bold text-muted">${mes}</td>
+                    <td class="fw-bold">$${C.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td style="color: #e53e3e;">-$${interesMes.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td style="color: #38a169;">+$${capitalMes.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="fw-bold" style="color: #2d3748;">$${saldo.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                 </tr>`;
                 
                 tbody.innerHTML += fila;
@@ -109,33 +224,39 @@
         }
     </script>
 
+    <!-- Sección de Contenido SEO -->
     <div class="container mb-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="p-4" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                    <h3 style="color: #333; font-weight: bold;">¿Cómo funciona nuestra Calculadora de Préstamos?</h3>
-                    <p class="text-muted">Nuestra herramienta utiliza el método de amortización francés (cuotas fijas), que es el estándar implementado por la mayoría de los bancos e instituciones financieras para créditos personales, hipotecarios y financiamiento de vehículos.</p>
+            <div class="col-lg-9">
+                <div class="seo-section">
+                    <h3 class="fw-bold mb-3" style="color: #2d3748;"><i class="fa-solid fa-circle-question me-2 text-primary" style="opacity: 0.8;"></i> ¿Cómo funciona nuestra Calculadora de Préstamos?</h3>
+                    <p class="text-muted" style="line-height: 1.8;">Nuestra herramienta utiliza el método de amortización francés (cuotas fijas), que es el estándar implementado por la mayoría de los bancos e instituciones financieras para créditos personales, hipotecarios y financiamiento de vehículos.</p>
                     
-                    <h4 style="color: #333; font-weight: bold; margin-top: 20px;">¿Qué es la tabla de amortización?</h4>
-                    <p class="text-muted">Es un desglose mensual que te muestra exactamente a dónde va tu dinero. En los primeros meses de un préstamo, la mayor parte de tu pago se destina a cubrir los intereses del banco. Con el paso del tiempo, esa proporción se invierte y comienzas a abonar mucho más al capital real que debes.</p>
+                    <hr class="my-4" style="opacity: 0.1;">
+
+                    <h4 class="fw-bold mb-3" style="color: #2d3748;"><i class="fa-solid fa-table-list me-2 text-primary" style="opacity: 0.8;"></i> ¿Qué es la tabla de amortización?</h4>
+                    <p class="text-muted" style="line-height: 1.8;">Es un desglose mensual que te muestra exactamente a dónde va tu dinero. En los primeros meses de un préstamo, la mayor parte de tu pago se destina a cubrir los intereses del banco. Con el paso del tiempo, esa proporción se invierte y comienzas a abonar mucho más al capital real que debes.</p>
                     
-                    <h4 style="color: #333; font-weight: bold; margin-top: 20px;">3 Consejos rápidos antes de solicitar un crédito:</h4>
-                    <ul class="text-muted">
-                        <li><strong>Verifica el tipo de tasa:</strong> Confirma con tu banco si la tasa de interés anual es fija o si puede variar después de los primeros meses.</li>
-                        <li><strong>Mide tu capacidad:</strong> Los expertos recomiendan que la cuota mensual de tus deudas no supere el 30% o 40% de tus ingresos netos.</li>
-                        <li><strong>Ojo con los extras:</strong> Esta calculadora te da la cuota pura. Recuerda sumar gastos de cierre o seguros que el banco pueda exigir.</li>
+                    <hr class="my-4" style="opacity: 0.1;">
+
+                    <h4 class="fw-bold mb-4" style="color: #2d3748;"><i class="fa-solid fa-lightbulb me-2 text-warning"></i> 3 Consejos antes de solicitar un crédito:</h4>
+                    <ul class="text-muted" style="line-height: 1.8; list-style-type: none; padding-left: 0;">
+                        <li class="mb-3"><i class="fa-solid fa-check text-success me-2"></i><strong>Verifica el tipo de tasa:</strong> Confirma con tu banco si la tasa de interés anual es fija o si puede variar después de los primeros meses.</li>
+                        <li class="mb-3"><i class="fa-solid fa-check text-success me-2"></i><strong>Mide tu capacidad:</strong> Los expertos recomiendan que la cuota mensual de tus deudas no supere el 30% o 40% de tus ingresos netos.</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i><strong>Ojo con los extras:</strong> Esta calculadora te da la cuota pura. Recuerda sumar gastos de cierre o seguros que el banco pueda exigir.</li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="text-center mt-5 mb-4">
-        <p class="text-muted small">
-            &copy; 2026 CuotaClara. Todos los derechos reservados.<br>
-            <a href="privacidad.html" class="text-decoration-none text-secondary">Política de Privacidad</a> | 
-            <a href="terminos.html" class="text-decoration-none text-secondary">Términos de Uso</a> | 
-            <a href="mailto:misaelbaezulloa875@gmail.com" class="text-decoration-none text-secondary">Contacto</a>
+    <!-- Footer Legal para AdSense -->
+    <footer class="text-center pb-5 pt-3">
+        <p class="text-muted small fw-bold">
+            &copy; 2026 CuotaClara. Todos los derechos reservados.<br><br>
+            <a href="privacidad.html" class="text-decoration-none text-muted mx-2 border-bottom border-secondary">Política de Privacidad</a> | 
+            <a href="terminos.html" class="text-decoration-none text-muted mx-2 border-bottom border-secondary">Términos de Uso</a> | 
+            <a href="mailto:misaelbaezulloa875@gmail.com" class="text-decoration-none text-muted mx-2 border-bottom border-secondary">Contacto</a>
         </p>
     </footer>
 

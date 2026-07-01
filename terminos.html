@@ -2,18 +2,85 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Términos de Uso - CuotaClara</title>
-    <!-- Usa el mismo CSS/Estilos que en privacidad.html -->
+    
+    <!-- Librerías de diseño (Mismas que tu index.html) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+            color: #2d3748;
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            padding: 40px 0;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .glass-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        h2 {
+            color: #2c5364;
+            font-weight: 600;
+            margin-top: 30px;
+            font-size: 1.3rem;
+        }
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-btn:hover {
+            color: #d1d1d1;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1>Términos de Uso</h1>
-        <p>Al utilizar CuotaClara, aceptas los siguientes términos:</p>
-        <ul>
-            <li><strong>Propósito informativo:</strong> Esta calculadora es una herramienta de simulación. Los resultados son aproximados y no constituyen una oferta vinculante de ninguna entidad financiera.</li>
-            <li><strong>Responsabilidad:</strong> No nos hacemos responsables de las decisiones financieras tomadas basadas en los cálculos de este sitio.</li>
-            <li><strong>Uso permitido:</strong> El uso de esta herramienta es estrictamente personal y gratuito.</li>
-        </ul>
+
+    <!-- Encabezado igual al de Privacidad -->
+    <div class="hero-bg">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left me-2"></i> Volver</a>
+            <h2 class="m-0 text-white" style="font-size: 1.5rem;"><i class="fas fa-wallet me-2"></i> CuotaClara</h2>
+            <div style="width: 150px;"></div> 
+        </div>
     </div>
+
+    <!-- Contenido de Términos -->
+    <div class="container">
+        <div class="glass-card">
+            <h1 class="text-center mb-4" style="font-weight: 700;">Términos de Uso</h1>
+            
+            <p>Al acceder y utilizar <strong>CuotaClara</strong>, aceptas cumplir con los siguientes términos y condiciones. Si no estás de acuerdo con estos términos, te recomendamos no utilizar esta herramienta.</p>
+
+            <h2>1. Propósito Informativo</h2>
+            <p>CuotaClara es una herramienta de simulación financiera diseñada únicamente con fines informativos y educativos. Los resultados obtenidos a través de nuestros cálculos son aproximados y <strong>no constituyen una oferta vinculante</strong>, asesoramiento financiero profesional ni una garantía de aprobación por parte de ninguna entidad bancaria.</p>
+
+            <h2>2. Responsabilidad del Usuario</h2>
+            <p>El uso de este simulador es responsabilidad exclusiva del usuario. No nos hacemos responsables de las decisiones financieras, inversiones o compromisos adquiridos basados en los resultados proporcionados por esta herramienta. Recomendamos siempre consultar con una institución financiera oficial antes de tomar cualquier decisión de crédito.</p>
+
+            <h2>3. Propiedad y Uso Permitido</h2>
+            <p>El diseño, código y contenido de CuotaClara son de uso personal y gratuito. Queda prohibida la reproducción, distribución o uso comercial del código sin autorización previa.</p>
+
+            <h2>4. Modificaciones</h2>
+            <p>Nos reservamos el derecho de modificar o actualizar estos términos en cualquier momento. El uso continuado del sitio implica la aceptación de dichos cambios.</p>
+        </div>
+    </div>
+
+    <footer class="text-center pb-4 text-muted">
+        <p>&copy; 2026 CuotaClara. Todos los derechos reservados.</p>
+    </footer>
+
 </body>
 </html>

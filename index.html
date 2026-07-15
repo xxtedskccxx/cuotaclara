@@ -221,4 +221,132 @@
             let tipo = document.querySelector('input[name="tipoInstitucion"]:checked').value; 
             let frecuencia = document.querySelector('input[name="frecuencia"]:checked').value; 
 
-            if (isNaN(V) || isNaN(interesAnual) || isNaN(plazoOriginalMeses) || V <= 0 || plazoOriginalMeses <=
+            if (isNaN(V) || isNaN(interesAnual) || isNaN(plazoOriginalMeses) || V <= 0 || plazoOriginalMeses <= 0) {
+                alert("Por favor, ingresa valores válidos.");
+                return;
+            }
+
+            // Ajustar matemáticas según la frecuencia (Mes vs Quincena)
+            let periodosPorAno = (frecuencia === 'quincenal') ? 24 : 12;
+            let totalPeriodos = (frecuencia === 'quincenal') ? plazoOriginalMeses * 2 : plazoOriginalMeses;
+            let i = (interesAnual / 100) / periodosPorAno;
+            
+            let C = 0;
+            let pagoTotal = 0;
+            let totalIntereses = 0;
+
+            if (tipo === 'banco') {
+                C = V * (i * Math.pow(1 + i, totalPeriodos)) / (Math.pow(1 + i, totalPeriodos) - 1);
+                pagoTotal = C * totalPeriodos;
+                totalIntereses = pagoTotal - V;
+            } else {
+                let interesPorPeriodo = V * i;
+                let capitalPorPeriodo = V / totalPeriodos;
+                C = capitalPorPeriodo + interesPorPeriodo;
+                pagoTotal = C * totalPeriodos;
+                totalIntereses = pagoTotal - V;
+            }
+
+            // Actualizar Textos Dinámicos
+            document.getElementById('texto-pago').innerText = (frecuencia === 'quincenal') ? "Tu pago quincenal estimado" : "Tu pago mensual estimado";
+            document.getElementById('th-periodo').innerText = (frecuencia === 'quincenal') ? "Quincena" : "Mes";
+
+            document.getElementById('cuota-mensual').innerText = "$" + C.toLocaleString('es-DO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('pago-total').innerText = "$" + pagoTotal.toLocaleString('es-DO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            
+            document.getElementById('zona-resultados').style.display = 'block';
+
+            // Gráfico
+            if(miGrafico != null){
+                miGrafico.destroy();
+            }
+            let ctx = document.getElementById('graficoResultados').getContext('2d');
+            miGrafico = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Capital Principal', 'Total Intereses'],
+                    datasets: [{
+                        data: [V, totalIntereses],
+                        backgroundColor: ['#38b2ac', '#e53e3e'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // Tabla
+            let tbody = document.getElementById('tabla-body');
+            tbody.innerHTML = ''; 
+            let saldo = V;
+
+            for (let periodo = 1; periodo <= totalPeriodos; periodo++) {
+                let interesMes = 0;
+                let capitalMes = 0;
+
+                if (tipo === 'banco') {
+                    interesMes = saldo * i;
+                    capitalMes = C - interesMes;
+                } else {
+                    interesMes = V * i;
+                    capitalMes = V / totalPeriodos;
+                }
+
+                saldo = saldo - capitalMes;
+                if (saldo < 0.01) saldo = 0;
+
+                let fila = `<tr>
+                    <td class="fw-bold text-muted">${periodo}</td>
+                    <td class="fw-bold">$${C.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td style="color: #e53e3e;">-$${interesMes.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td style="color: #38a169;">+$${capitalMes.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="fw-bold" style="color: #2d3748;">$${saldo.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                </tr>`;
+                
+                tbody.innerHTML += fila;
+            }
+        }
+    </script>
+
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="seo-section">
+                    <h3 class="fw-bold mb-3" style="color: #2d3748;"><i class="fa-solid fa-circle-question me-2 text-primary" style="opacity: 0.8;"></i> ¿Cómo funciona nuestra Calculadora de Préstamos?</h3>
+                    <p class="text-muted" style="line-height: 1.8;">Nuestra herramienta utiliza el método de amortización francés (cuotas fijas), que es el estándar implementado por la mayoría de los bancos e instituciones financieras para créditos personales, hipotecarios y financiamiento de vehículos.</p>
+                    
+                    <hr class="my-4" style="opacity: 0.1;">
+                    <h4 class="fw-bold mb-3" style="color: #2d3748;"><i class="fa-solid fa-table-list me-2 text-primary" style="opacity: 0.8;"></i> ¿Qué es la tabla de amortización?</h4>
+                    <p class="text-muted" style="line-height: 1.8;">Es un desglose mensual que te muestra exactamente a dónde va tu dinero. En los primeros meses de un préstamo, la mayor parte de tu pago se destina a cubrir los intereses del banco. Con el paso del tiempo, esa proporción se invierte y comienzas a abonar mucho más al capital real que debes.</p>
+                    
+                    <hr class="my-4" style="opacity: 0.1;">
+                    <h4 class="fw-bold mb-3" style="color: #2d3748;"><i class="fa-solid fa-building-columns me-2 text-primary" style="opacity: 0.8;"></i> Diferencia entre Bancos y Cooperativas</h4>
+                    <p class="text-muted" style="line-height: 1.8;">Es fundamental saber qué método de cobro utiliza tu institución. Los <strong>bancos comerciales</strong> utilizan la Amortización Francesa (el cálculo que hace esta web), donde los intereses se descuentan del saldo restante. Sin embargo, muchas <strong>Cooperativas</strong> utilizan el modelo de <strong>Interés Plano o Fijo</strong>, donde te cobran la misma cantidad de interés basada en el monto original durante toda la vida del préstamo.</p>
+
+                    <hr class="my-4" style="opacity: 0.1;">
+                    <h4 class="fw-bold mb-4" style="color: #2d3748;"><i class="fa-solid fa-lightbulb me-2 text-warning"></i> 3 Consejos antes de solicitar un crédito:</h4>
+                    <ul class="text-muted" style="line-height: 1.8; list-style-type: none; padding-left: 0;">
+                        <li class="mb-3"><i class="fa-solid fa-check text-success me-2"></i><strong>Verifica el tipo de tasa:</strong> Confirma con tu banco si la tasa de interés anual es fija o si puede variar.</li>
+                        <li class="mb-3"><i class="fa-solid fa-check text-success me-2"></i><strong>Mide tu capacidad:</strong> Los expertos recomiendan que la cuota de tus deudas no supere el 30% de tus ingresos.</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i><strong>Ojo con los extras:</strong> Esta calculadora te da la cuota pura. Recuerda sumar gastos de cierre o seguros.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center pb-5 pt-3">
+        <p class="text-muted small fw-bold">
+            &copy; 2026 CuotaClara. Todos los derechos reservados.<br><br>
+            <a href="privacidad.html" class="text-decoration-none text-muted mx-2 border-bottom border-secondary">Política de Privacidad</a> | 
+            <a href="terminos.html" class="text-decoration-none text-muted mx-2 border-bottom border-secondary">Términos de Uso</a> | 
+            <a href="mailto:misaelbaezulloa875@gmail.com" class="text-decoration-none text-muted mx-2 border-bottom border-secondary">Contacto</a>
+        </p>
+    </footer>
+
+</body>
+</html>

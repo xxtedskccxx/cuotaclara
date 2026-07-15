@@ -36,9 +36,26 @@
 
         .form-label { font-weight: 600; color: #4a5568; }
         .input-group-text { background-color: #f8fafc; border: 2px solid #e2e8f0; border-right: none; color: #4fd1c5; }
-        .form-control, .form-select { border: 2px solid #e2e8f0; border-left: none; box-shadow: none !important; padding: 12px; font-weight: 600; color: #2d3748; }
-        .form-control:focus, .form-select:focus { border-color: #e2e8f0; background-color: #f8fafc; }
-        .form-select { border-left: 2px solid #e2e8f0; border-radius: 12px; }
+        .form-control { border: 2px solid #e2e8f0; border-left: none; box-shadow: none !important; padding: 12px; font-weight: 600; color: #2d3748; }
+        .form-control:focus { border-color: #e2e8f0; background-color: #f8fafc; }
+
+        /* Estilos para los nuevos botones de selección */
+        .btn-outline-custom {
+            color: #38b2ac;
+            border-color: #38b2ac;
+            font-weight: 600;
+            padding: 10px;
+        }
+        .btn-outline-custom:hover {
+            background-color: rgba(56, 178, 172, 0.1);
+            color: #319795;
+        }
+        .btn-check:checked + .btn-outline-custom {
+            background-color: #38b2ac;
+            color: white;
+            border-color: #38b2ac;
+            box-shadow: 0 4px 10px rgba(56, 178, 172, 0.3);
+        }
 
         .btn-calc { 
             background: linear-gradient(135deg, #38b2ac 0%, #319795 100%); 
@@ -69,7 +86,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Animación para que la tabla y el gráfico aparezcan suavemente */
         .fade-in-section { animation: fadeIn 0.8s ease-in-out; }
     </style>
     
@@ -121,24 +137,39 @@
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label for="tipoPrestamo" class="form-label">Tipo de Institución / Método de cálculo:</label>
-                        <select id="tipoPrestamo" class="form-select">
-                            <option value="banco">Banco Comercial (Cuota Fija - Amortización Francesa)</option>
-                            <option value="cooperativa">Cooperativa (Interés Plano / Fijo)</option>
-                        </select>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Tipo de Institución:</label>
+                            <div class="d-flex gap-2">
+                                <input type="radio" class="btn-check" name="tipoInstitucion" id="banco" value="banco" checked>
+                                <label class="btn btn-outline-custom w-100" for="banco"><i class="fa-solid fa-building-columns"></i> Banco</label>
+
+                                <input type="radio" class="btn-check" name="tipoInstitucion" id="cooperativa" value="cooperativa">
+                                <label class="btn btn-outline-custom w-100" for="cooperativa"><i class="fa-solid fa-users"></i> Cooperativa</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Frecuencia de Pago:</label>
+                            <div class="d-flex gap-2">
+                                <input type="radio" class="btn-check" name="frecuencia" id="mensual" value="mensual" checked>
+                                <label class="btn btn-outline-custom w-100" for="mensual"><i class="fa-regular fa-calendar"></i> Mensual</label>
+
+                                <input type="radio" class="btn-check" name="frecuencia" id="quincenal" value="quincenal">
+                                <label class="btn btn-outline-custom w-100" for="quincenal"><i class="fa-solid fa-calendar-day"></i> Quincenal</label>
+                            </div>
+                        </div>
                     </div>
 
                     <button onclick="calcularCuota()" class="btn-calc w-100">
-                        <i class="fa-solid fa-calculator me-2"></i> Calcular Cuota Mensual
+                        <i class="fa-solid fa-calculator me-2"></i> Calcular Cuota
                     </button>
 
                     <div id="zona-resultados" style="display: none;" class="fade-in-section">
-                        
                         <div class="row mt-5">
                             <div class="col-md-6 mb-4">
                                 <div class="result-box h-100 d-flex flex-column justify-content-center">
-                                    <span class="text-muted d-block mb-2 fw-bold text-uppercase" style="letter-spacing: 1px;">Tu pago mensual estimado</span>
+                                    <span id="texto-pago" class="text-muted d-block mb-2 fw-bold text-uppercase" style="letter-spacing: 1px;">Tu pago estimado</span>
                                     <h2 id="cuota-mensual" class="fw-bold m-0 text-gradient">$0.00</h2>
                                     <hr class="my-3" style="border-color: #c6f6d5;">
                                     <div class="d-flex justify-content-between text-muted small fw-bold">
@@ -161,7 +192,7 @@
                                 <table class="table table-hover text-center m-0">
                                     <thead style="position: sticky; top: 0; z-index: 1;">
                                         <tr>
-                                            <th>Mes</th>
+                                            <th id="th-periodo">Período</th>
                                             <th>Cuota</th>
                                             <th>Interés</th>
                                             <th>Capital</th>
@@ -173,7 +204,6 @@
                                 </table>
                             </div>
                         </div>
-
                     </div> 
                 </div>
             </div>
@@ -181,143 +211,14 @@
     </div>
 
     <script>
-        let miGrafico = null; // Variable para almacenar el gráfico y poder actualizarlo
+        let miGrafico = null; 
 
         function calcularCuota() {
             let V = parseFloat(document.getElementById('monto').value);
             let interesAnual = parseFloat(document.getElementById('interes').value);
-            let n = parseFloat(document.getElementById('meses').value);
-            let tipo = document.getElementById('tipoPrestamo').value; // Obtener método seleccionado
-
-            if (isNaN(V) || isNaN(interesAnual) || isNaN(n) || V <= 0 || n <= 0) {
-                alert("Por favor, ingresa valores válidos.");
-                return;
-            }
-
-            let i = (interesAnual / 100) / 12;
-            let C = 0;
-            let pagoTotal = 0;
-            let totalIntereses = 0;
-
-            if (tipo === 'banco') {
-                // FÓRMULA FRANCESA (BANCOS)
-                C = V * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
-                pagoTotal = C * n;
-                totalIntereses = pagoTotal - V;
-            } else {
-                // FÓRMULA INTERÉS PLANO (COOPERATIVAS)
-                let interesMensualFijo = V * i;
-                let capitalMensualFijo = V / n;
-                C = capitalMensualFijo + interesMensualFijo;
-                pagoTotal = C * n;
-                totalIntereses = pagoTotal - V;
-            }
-
-            // Actualizar números en pantalla
-            document.getElementById('cuota-mensual').innerText = "$" + C.toLocaleString('es-DO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            document.getElementById('pago-total').innerText = "$" + pagoTotal.toLocaleString('es-DO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            let plazoOriginalMeses = parseFloat(document.getElementById('meses').value);
             
-            // Mostrar la zona de resultados
-            document.getElementById('zona-resultados').style.display = 'block';
+            let tipo = document.querySelector('input[name="tipoInstitucion"]:checked').value; 
+            let frecuencia = document.querySelector('input[name="frecuencia"]:checked').value; 
 
-            // --- Lógica del Gráfico Chart.js ---
-            if(miGrafico != null){
-                miGrafico.destroy(); // Destruir gráfico anterior si existe
-            }
-            let ctx = document.getElementById('graficoResultados').getContext('2d');
-            miGrafico = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Capital Principal', 'Total Intereses'],
-                    datasets: [{
-                        data: [V, totalIntereses],
-                        backgroundColor: ['#38b2ac', '#e53e3e'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
-            });
-
-            // --- Lógica de la Tabla ---
-            let tbody = document.getElementById('tabla-body');
-            tbody.innerHTML = ''; 
-            let saldo = V;
-
-            for (let mes = 1; mes <= n; mes++) {
-                let interesMes = 0;
-                let capitalMes = 0;
-
-                if (tipo === 'banco') {
-                    interesMes = saldo * i;
-                    capitalMes = C - interesMes;
-                } else {
-                    // Cooperativa: Interés fijo sobre monto inicial y abono a capital idéntico mensual
-                    interesMes = V * i;
-                    capitalMes = V / n;
-                }
-
-                saldo = saldo - capitalMes;
-
-                if (saldo < 0.01) saldo = 0;
-
-                let fila = `<tr>
-                    <td class="fw-bold text-muted">${mes}</td>
-                    <td class="fw-bold">$${C.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td style="color: #e53e3e;">-$${interesMes.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td style="color: #38a169;">+$${capitalMes.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td class="fw-bold" style="color: #2d3748;">$${saldo.toLocaleString('es-DO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                </tr>`;
-                
-                tbody.innerHTML += fila;
-            }
-        }
-    </script>
-
-    <div class="container mb-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-9">
-                <div class="seo-section">
-                    <h3 class="fw-bold mb-3" style="color: #2d3748;"><i class="fa-solid fa-circle-question me-2 text-primary" style="opacity: 0.8;"></i> ¿Cómo funciona nuestra Calculadora de Préstamos?</h3>
-                    <p class="text-muted" style="line-height: 1.8;">Nuestra herramienta utiliza el método de amortización francés (cuotas fijas), que es el estándar implementado por la mayoría de los bancos e instituciones financieras para créditos personales, hipotecarios y financiamiento de vehículos.</p>
-                    
-                    <hr class="my-4" style="opacity: 0.1;">
-
-                    <h4 class="fw-bold mb-3" style="color: #2d3748;"><i class="fa-solid fa-table-list me-2 text-primary" style="opacity: 0.8;"></i> ¿Qué es la tabla de amortización?</h4>
-                    <p class="text-muted" style="line-height: 1.8;">Es un desglose mensual que te muestra exactamente a dónde va tu dinero. En los primeros meses de un préstamo, la mayor parte de tu pago se destina a cubrir los intereses del banco. Con el paso del tiempo, esa proporción se invierte y comienzas a abonar mucho más al capital real que debes.</p>
-                    
-                    <hr class="my-4" style="opacity: 0.1;">
-
-                    <h4 class="fw-bold mb-3" style="color: #2d3748;"><i class="fa-solid fa-building-columns me-2 text-primary" style="opacity: 0.8;"></i> Diferencia entre Bancos y Cooperativas</h4>
-                    <p class="text-muted" style="line-height: 1.8;">Es fundamental saber qué método de cobro utiliza tu institución. Los <strong>bancos comerciales</strong> utilizan la Amortización Francesa (el cálculo que hace esta web), donde los intereses se descuentan del saldo restante. Sin embargo, muchas <strong>Cooperativas</strong> utilizan el modelo de <strong>Interés Plano o Fijo</strong>, donde te cobran la misma cantidad de interés basada en el monto original durante toda la vida del préstamo. Si planeas tomar un crédito en una cooperativa, ten en cuenta que tu cuota real puede variar frente a este cálculo.</p>
-
-                    <hr class="my-4" style="opacity: 0.1;">
-
-                    <h4 class="fw-bold mb-4" style="color: #2d3748;"><i class="fa-solid fa-lightbulb me-2 text-warning"></i> 3 Consejos antes de solicitar un crédito:</h4>
-                    <ul class="text-muted" style="line-height: 1.8; list-style-type: none; padding-left: 0;">
-                        <li class="mb-3"><i class="fa-solid fa-check text-success me-2"></i><strong>Verifica el tipo de tasa:</strong> Confirma con tu banco si la tasa de interés anual es fija o si puede variar después de los primeros meses.</li>
-                        <li class="mb-3"><i class="fa-solid fa-check text-success me-2"></i><strong>Mide tu capacidad:</strong> Los expertos recomiendan que la cuota mensual de tus deudas no supere el 30% o 40% de tus ingresos netos.</li>
-                        <li><i class="fa-solid fa-check text-success me-2"></i><strong>Ojo con los extras:</strong> Esta calculadora te da la cuota pura. Recuerda sumar gastos de cierre o seguros que el banco pueda exigir.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="text-center pb-5 pt-3">
-        <p class="text-muted small fw-bold">
-            &copy; 2026 CuotaClara. Todos los derechos reservados.<br><br>
-            <a href="privacidad.html" class="text-decoration-none text-muted mx-2 border-bottom border-secondary">Política de Privacidad</a> | 
-            <a href="terminos.html" class="text-decoration-none text-muted mx-2 border-bottom border-secondary">Términos de Uso</a> | 
-            <a href="mailto:misaelbaezulloa875@gmail.com" class="text-decoration-none text-muted mx-2 border-bottom border-secondary">Contacto</a>
-        </p>
-    </footer>
-
-</body>
-</html>
+            if (isNaN(V) || isNaN(interesAnual) || isNaN(plazoOriginalMeses) || V <= 0 || plazoOriginalMeses <=
